@@ -1,5 +1,5 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.0-green.svg)](https://github.com/SkillPanel/serena-setup/releases)
+[![Version](https://img.shields.io/badge/version-1.0.0-green.svg)](https://github.com/SkillPanel/claude-plugins/releases)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-purple.svg)](https://docs.anthropic.com/en/docs/claude-code)
 
 # serena-setup
@@ -22,7 +22,7 @@ No manual file copying. No guessing which flags are missing. No silent edits in 
 
 ```bash
 # Install once
-claude plugin add --global gh:SkillPanel/serena-setup
+claude plugin add --global gh:SkillPanel/claude-plugins
 
 # In any git worktree, start Claude Code and run:
 /serena-setup:serena-setup
@@ -41,26 +41,26 @@ The plugin guides you through a two-step process (run → restart → run again)
 **Via marketplace (recommended):**
 
 ```
-/plugin marketplace add SkillPanel/serena-setup
+/plugin marketplace add SkillPanel/claude-plugins
 /plugin install serena-setup@serena-setup
 ```
 
 **Direct install:**
 
 ```bash
-claude plugin add --global gh:SkillPanel/serena-setup
+claude plugin add --global gh:SkillPanel/claude-plugins
 ```
 
 **Local development:**
 
 ```bash
-git clone https://github.com/SkillPanel/serena-setup.git
+git clone https://github.com/SkillPanel/claude-plugins.git
 claude --plugin-dir ./serena-setup
 ```
 
 ## Contributing
 
-Issues and pull requests welcome at [github.com/SkillPanel/serena-setup](https://github.com/SkillPanel/serena-setup).
+Issues and pull requests welcome at [github.com/SkillPanel/claude-plugins](https://github.com/SkillPanel/claude-plugins).
 
 ## License
 

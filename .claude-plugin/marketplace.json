@@ -11,7 +11,7 @@
       "name": "serena-setup",
       "source": {
         "source": "github",
-        "repo": "SkillPanel/serena-setup"
+        "repo": "SkillPanel/claude-plugins"
       },
       "description": "Configures Serena MCP to work correctly in git worktrees",
       "version": "1.0.0"
