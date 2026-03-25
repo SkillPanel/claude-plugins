@@ -1,0 +1,17 @@
+{
+  "name": "serena-setup",
+  "owner": {
+    "name": "SkillPanel"
+  },
+  "metadata": {
+    "description": "Configures Serena MCP to work correctly in git worktrees"
+  },
+  "plugins": [
+    {
+      "name": "serena-setup",
+      "source": ".",
+      "description": "Configures Serena MCP to work correctly in git worktrees",
+      "version": "1.0.0"
+    }
+  ]
+}
