@@ -9,7 +9,10 @@
   "plugins": [
     {
       "name": "serena-setup",
-      "source": ".",
+      "source": {
+        "source": "github",
+        "repo": "SkillPanel/serena-setup"
+      },
       "description": "Configures Serena MCP to work correctly in git worktrees",
       "version": "1.0.0"
     }
