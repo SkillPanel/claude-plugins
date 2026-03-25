@@ -58,10 +58,6 @@ git clone https://github.com/SkillPanel/claude-plugins.git
 claude --plugin-dir ./serena-setup
 ```
 
-## Contributing
-
-Issues and pull requests welcome at [github.com/SkillPanel/claude-plugins](https://github.com/SkillPanel/claude-plugins).
-
 ## License
 
 MIT — see [LICENSE](LICENSE) for details.
