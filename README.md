@@ -38,7 +38,14 @@ The plugin guides you through a two-step process (run → restart → run again)
 
 ## Installation
 
-**From GitHub (recommended):**
+**Via marketplace (recommended):**
+
+```
+/plugin marketplace add SkillPanel/serena-setup
+/plugin install serena-setup@serena-setup
+```
+
+**Direct install:**
 
 ```bash
 claude plugin add --global gh:SkillPanel/serena-setup
