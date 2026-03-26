@@ -4,28 +4,23 @@
 # project.yml and memories should be committed to git.
 set -euo pipefail
 
-CURRENT_DIR="$PWD"
 SERENA_INDEX_CMD="uvx --from git+https://github.com/oraios/serena serena project index --timeout 300"
 MAIN_WORKTREE="$(git worktree list --porcelain | head -1 | awk '{print $2}')"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# --- Main repo: install hook only ---
-if [[ "$CURRENT_DIR" == "$MAIN_WORKTREE" ]]; then
-    echo "=== Serena Hook Setup (main repo) ==="
-    echo ""
+install_hook() {
+    local hook_dir="$MAIN_WORKTREE/.git/hooks"
+    local hook_file="$hook_dir/post-checkout"
+    local marker="# --- serena-worktree-hook ---"
 
-    HOOK_DIR="$MAIN_WORKTREE/.git/hooks"
-    HOOK_FILE="$HOOK_DIR/post-checkout"
-    MARKER="# --- serena-worktree-hook ---"
-    SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-
-    mkdir -p "$HOOK_DIR"
-    if [[ ! -f "$HOOK_FILE" ]]; then
-        echo '#!/usr/bin/env bash' > "$HOOK_FILE"
-        chmod +x "$HOOK_FILE"
+    mkdir -p "$hook_dir"
+    if [[ ! -f "$hook_file" ]]; then
+        echo '#!/usr/bin/env bash' > "$hook_file"
+        chmod +x "$hook_file"
     fi
 
-    if grep -q "$MARKER" "$HOOK_FILE" 2>/dev/null; then
-        sed -i "/$MARKER/,/$MARKER/d" "$HOOK_FILE"
+    if grep -q "$marker" "$hook_file" 2>/dev/null; then
+        sed -i "/$marker/,/$marker/d" "$hook_file"
         echo "[done] Updated post-checkout hook"
     else
         echo "[done] Installed post-checkout hook"
@@ -33,11 +28,16 @@ if [[ "$CURRENT_DIR" == "$MAIN_WORKTREE" ]]; then
 
     {
         echo ""
-        echo "$MARKER"
+        echo "$marker"
         cat "$SCRIPT_DIR/post-checkout-serena.sh"
-        echo "$MARKER"
-    } >> "$HOOK_FILE"
+        echo "$marker"
+    } >> "$hook_file"
+}
 
+if [[ "$PWD" == "$MAIN_WORKTREE" ]]; then
+    echo "=== Serena Hook Setup (main repo) ==="
+    echo ""
+    install_hook
     echo ""
     echo "Future worktrees will get .serena/cache automatically."
     echo "No other setup needed in main repo — Serena works here by default."
@@ -45,11 +45,10 @@ if [[ "$CURRENT_DIR" == "$MAIN_WORKTREE" ]]; then
 fi
 
 echo "=== Serena Worktree Setup ==="
-echo "  Worktree:  $CURRENT_DIR"
+echo "  Worktree:  $PWD"
 echo "  Main repo: $MAIN_WORKTREE"
 echo ""
 
-# --- Validate: project.yml must exist (should come from git checkout) ---
 if [[ ! -f ".serena/project.yml" ]]; then
     if [[ -f "$MAIN_WORKTREE/.serena/project.yml" ]]; then
         echo "ERROR: .serena/project.yml is missing from this worktree"
@@ -77,14 +76,10 @@ else
     echo "[ok]   .serena/project.yml present"
 fi
 
-# --- Step 1: Copy pre-indexed cache ---
-# See: https://oraios.github.io/serena/02-usage/999_additional-usage.html
-has_cache=false
-[[ -d "$MAIN_WORKTREE/.serena/cache" ]] && [[ -n "$(ls -A "$MAIN_WORKTREE/.serena/cache" 2>/dev/null)" ]] && has_cache=true
-
+# https://oraios.github.io/serena/02-usage/999_additional-usage.html
 if [[ -d ".serena/cache" ]]; then
     echo "[skip] .serena/cache already exists"
-elif $has_cache; then
+elif [[ -d "$MAIN_WORKTREE/.serena/cache" ]] && [[ -n "$(ls -A "$MAIN_WORKTREE/.serena/cache" 2>/dev/null)" ]]; then
     cp -r "$MAIN_WORKTREE/.serena/cache" .serena/cache
     echo "[done] Copied .serena/cache from main (avoids re-indexing)"
 else
@@ -92,34 +87,8 @@ else
     echo "       Fix: cd $MAIN_WORKTREE && $SERENA_INDEX_CMD"
 fi
 
-# --- Step 2: Install post-checkout hook for future worktrees ---
-HOOK_DIR="$MAIN_WORKTREE/.git/hooks"
-HOOK_FILE="$HOOK_DIR/post-checkout"
-MARKER="# --- serena-worktree-hook ---"
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+install_hook
 
-mkdir -p "$HOOK_DIR"
-if [[ ! -f "$HOOK_FILE" ]]; then
-    echo '#!/usr/bin/env bash' > "$HOOK_FILE"
-    chmod +x "$HOOK_FILE"
-fi
-
-if [[ -f "$HOOK_FILE" ]] && grep -q "$MARKER" "$HOOK_FILE"; then
-    # Remove old hook block and replace with current version
-    sed -i "/$MARKER/,/$MARKER/d" "$HOOK_FILE"
-    echo "[done] Updated post-checkout hook"
-else
-    echo "[done] Installed post-checkout hook"
-fi
-
-{
-    echo ""
-    echo "$MARKER"
-    cat "$SCRIPT_DIR/post-checkout-serena.sh"
-    echo "$MARKER"
-} >> "$HOOK_FILE"
-
-# --- Summary ---
 echo ""
 echo "=== Serena configured for worktree ==="
 echo "  .serena/project.yml  — from git"

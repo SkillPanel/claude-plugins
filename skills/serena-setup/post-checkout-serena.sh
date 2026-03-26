@@ -4,6 +4,7 @@
 # Installed by /serena-setup skill. Appended to .git/hooks/post-checkout.
 
 # Only run on new worktree/clone (null-ref in $1)
+# return||exit: works both when sourced (appended into hook) and run standalone
 [ "$1" = "0000000000000000000000000000000000000000" ] || return 0 2>/dev/null || exit 0
 
 MAIN_REPO="$(git worktree list --porcelain | head -1 | awk '{print $2}')"
