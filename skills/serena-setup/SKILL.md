@@ -1,14 +1,14 @@
 ---
 name: serena-setup
 description: "Use when: (1) starting work in a new git worktree, (2) Serena edits/reads files in wrong directory, (3) Serena's active project path doesn't match current worktree, (4) user reports 'Serena points to main repo'"
-allowed-tools: Bash(*/setup-serena.sh), mcp__serena__check_onboarding_performed, mcp__serena__onboarding, mcp__serena__write_memory, mcp__serena__list_memories, mcp__serena__list_dir
+allowed-tools: Bash(*/setup-serena.sh), mcp__serena__check_onboarding_performed, mcp__serena__list_memories, mcp__serena__list_dir
 ---
 
 ## Overview
 
-Configures Serena MCP to work in a git worktree. Copies pre-indexed cache from the main repo, installs a `post-checkout` hook for future worktrees, and runs Serena onboarding to activate the project.
+Configures Serena MCP to work in a git worktree. Copies cache and memories from the main repo, installs a `post-checkout` hook for future worktrees, and activates the project.
 
-`project.yml` and `memories/` should be committed to git — they come with checkout, no copying needed.
+`project.yml` should be committed to git. `memories/` are copied from main repo by the setup script (like `cache/`).
 
 ## If running in the main repository
 
@@ -31,8 +31,9 @@ If it fails, show the error and stop. If it succeeds, **check the output for `[w
 Serena MCP is shared across sessions and won't auto-activate the worktree project. Activate it explicitly:
 
 1. Call `activate_project` with the worktree path (`$PWD`)
-2. Call `check_onboarding_performed` — should confirm memories exist (they come from git checkout)
-3. If no memories: only then run `onboarding`
+2. Call `check_onboarding_performed`
+3. If memories exist: done — move to Step 3
+4. If no memories: **do NOT run onboarding**. The setup script should have copied them from main. Tell the user: "Memories missing — run onboarding in the main repo first, then re-run /serena-setup"
 
 **Step 3 — Verify:**
 
@@ -45,5 +46,5 @@ Tell user: "Serena setup complete. Future worktrees will get `.serena/cache` aut
 | Mistake | Consequence |
 |---------|-------------|
 | Running in main repo | Script installs hook only — no worktree setup needed |
-| Skipping onboarding | Serena may point to wrong project (main repo or parent dir) |
+| Running onboarding in worktree | Wastes time recreating memories that exist in main repo — never do this |
 | `.serena/project.yml` not committed to git | Worktrees won't have it after checkout — script warns and copies as workaround |

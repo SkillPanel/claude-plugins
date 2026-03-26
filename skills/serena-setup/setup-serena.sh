@@ -87,10 +87,20 @@ else
     echo "       Fix: cd $MAIN_WORKTREE && $SERENA_INDEX_CMD"
 fi
 
+if [[ -d ".serena/memories" ]] && [[ -n "$(ls -A ".serena/memories" 2>/dev/null)" ]]; then
+    echo "[skip] .serena/memories already exists"
+elif [[ -d "$MAIN_WORKTREE/.serena/memories" ]] && [[ -n "$(ls -A "$MAIN_WORKTREE/.serena/memories" 2>/dev/null)" ]]; then
+    cp -r "$MAIN_WORKTREE/.serena/memories" .serena/memories
+    echo "[done] Copied .serena/memories from main"
+else
+    echo "[warn] Main has no Serena memories — run onboarding in main repo first"
+fi
+
 install_hook
 
 echo ""
 echo "=== Serena configured for worktree ==="
 echo "  .serena/project.yml  — from git"
+echo "  .serena/memories/    — $(if [[ -d .serena/memories ]] && [[ -n "$(ls -A .serena/memories 2>/dev/null)" ]]; then echo "copied from main"; else echo "not available"; fi)"
 echo "  .serena/cache/       — $(if [[ -d .serena/cache ]]; then echo "copied from main"; else echo "not available"; fi)"
 echo "  post-checkout hook   — installed"
