@@ -21,3 +21,9 @@ if [ ! -d ".serena/cache" ] && [ -d "$MAIN_REPO/.serena/cache" ] && [ -n "$(ls -
     cp -r "$MAIN_REPO/.serena/cache" .serena/cache
     echo "[serena-hook] Copied .serena/cache from main repo" >&2
 fi
+
+# Copy CLAUDE.local.md if missing (gitignored, never comes from checkout)
+if [ ! -f "CLAUDE.local.md" ] && [ -f "$MAIN_REPO/CLAUDE.local.md" ]; then
+    cp "$MAIN_REPO/CLAUDE.local.md" CLAUDE.local.md
+    echo "[serena-hook] Copied CLAUDE.local.md from main repo" >&2
+fi

@@ -96,6 +96,15 @@ else
     echo "[warn] Main has no Serena memories — run onboarding in main repo first"
 fi
 
+if [[ -f "CLAUDE.local.md" ]]; then
+    echo "[skip] CLAUDE.local.md already exists"
+elif [[ -f "$MAIN_WORKTREE/CLAUDE.local.md" ]]; then
+    cp "$MAIN_WORKTREE/CLAUDE.local.md" CLAUDE.local.md
+    echo "[done] Copied CLAUDE.local.md from main"
+else
+    echo "[skip] No CLAUDE.local.md in main repo"
+fi
+
 install_hook
 
 echo ""
@@ -103,4 +112,5 @@ echo "=== Serena configured for worktree ==="
 echo "  .serena/project.yml  — from git"
 echo "  .serena/memories/    — $(if [[ -d .serena/memories ]] && [[ -n "$(ls -A .serena/memories 2>/dev/null)" ]]; then echo "copied from main"; else echo "not available"; fi)"
 echo "  .serena/cache/       — $(if [[ -d .serena/cache ]]; then echo "copied from main"; else echo "not available"; fi)"
+echo "  CLAUDE.local.md      — $(if [[ -f CLAUDE.local.md ]]; then echo "present"; else echo "not found"; fi)"
 echo "  post-checkout hook   — installed"
