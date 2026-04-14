@@ -29,3 +29,4 @@ All versions MUST match. The root `metadata.version` in `marketplace.json` shoul
 ## Current Skills
 
 - **serena-setup** (`/serena-setup:serena-setup`) — Copies `.serena/` from main repo to worktree and installs a `post-checkout` hook for automatic setup of future worktrees
+- **jdtls-lombok-fix** — Auto-triggered skill that patches the `jdtls-lsp` plugin's `marketplace.json` to pass `-javaagent:lombok.jar` to JDTLS, removing the flood of false-positive Lombok errors (`log cannot be resolved`, `builder() undefined`, etc.). Background: anthropics/claude-plugins-official#1000
